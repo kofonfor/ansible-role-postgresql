@@ -18,10 +18,15 @@
     - postgresql-contrib-{{ postgres_version }}
     - libpq-dev
     - python-psycopg2
+  when: not postgres_client_only
+
+- name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
+  apt: name=postgresql-client-{{ postgres_version }}
+  when: postgres_client_only
 
 - name: create conf.d
   file: dest=/etc/postgresql/{{ postgres_version }}/main/conf.d state=directory
-  when: postgres_enable_conf
+  when: postgres_enable_conf and not postgres_client_only
 
 - name: enable {{ postgres_include_dir }} configs inclusion
   lineinfile: dest="/etc/postgresql/{{ postgres_version }}/main/postgresql.conf"
@@ -29,7 +34,8 @@
               backrefs=on
               line='\1\2{{ postgres_include_dir }}\3'
               backup=yes
-  when: postgres_enable_conf
+  when: postgres_enable_conf and not postgres_client_only
 
 - name: ensure postgresql is started
   service: name=postgresql state=started
+  when: not postgres_client_only
