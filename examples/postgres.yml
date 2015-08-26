@@ -1,0 +1,5 @@
+- name: set up postgres
+  hosts: postgres_*
+  sudo: yes
+  roles:
+    - postgresql

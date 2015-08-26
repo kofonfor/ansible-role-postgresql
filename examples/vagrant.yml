@@ -1,0 +1,8 @@
+- hosts: vagrant
+  sudo: yes
+  roles:
+    - vagrant
+  tasks:
+
+    - name: now run 'ansible-playbook postgres.yml'
+      debug: msg="now run 'ansible-playbook postgres.yml'"

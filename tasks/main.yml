@@ -1,0 +1,35 @@
+---
+- name: add postgres apt key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+  when: ansible_distribution_version|version_compare(12.04, '<=') or postgres_version|version_compare(9.3, '>')
+
+- name: ensure postgres source in sources.list
+  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present update_cache=yes
+  when: ansible_distribution_version|version_compare(12.04, '<=') or postgres_version|version_compare(9.3, '>')
+
+- name: apt-get update
+  apt: update_cache=yes cache_valid_time=3600
+  ignore_errors: True
+
+- name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
+  apt: name={{ item }}
+  with_items:
+    - postgresql-{{ postgres_version }}
+    - postgresql-contrib-{{ postgres_version }}
+    - libpq-dev
+    - python-psycopg2
+
+- name: create conf.d
+  file: dest=/etc/postgresql/{{ postgres_version }}/main/conf.d state=directory
+  when: postgres_enable_conf
+
+- name: enable {{ postgres_include_dir }} configs inclusion
+  lineinfile: dest="/etc/postgresql/{{ postgres_version }}/main/postgresql.conf"
+              regexp="(^\s*)#*(\s*include_dir\s*=\s*')[^']*('.*$)"
+              backrefs=on
+              line='\1\2{{ postgres_include_dir }}\3'
+              backup=yes
+  when: postgres_enable_conf
+
+- name: ensure postgresql is started
+  service: name=postgresql state=started
