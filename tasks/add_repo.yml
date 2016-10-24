@@ -1,3 +1,6 @@
+- name: install wget
+  apt: name=wget state=present
+
 - name: add postgres apt key
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
