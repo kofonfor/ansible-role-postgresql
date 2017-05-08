@@ -1,0 +1,40 @@
+---
+- include: add_repo.yml
+  when: ansible_distribution == "Debian" or
+        ( ansible_distribution == "Ubuntu"
+        and ( ansible_distribution_version|version_compare(12.04, '<=') or
+            postgres_version|version_compare(9.3, '>') )
+        )
+
+- name: apt-get update
+  apt: update_cache=yes cache_valid_time=3600
+  ignore_errors: True
+
+- name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
+  apt: name={{ item }}
+  with_items:
+    - postgresql-{{ postgres_version }}
+    - postgresql-contrib-{{ postgres_version }}
+    - libpq-dev
+    - python-psycopg2
+  when: not postgres_client_only
+
+- name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
+  apt: name=postgresql-client-{{ postgres_version }}
+  when: postgres_client_only
+
+- name: create conf.d
+  file: dest=/etc/postgresql/{{ postgres_version }}/main/conf.d state=directory
+  when: postgres_enable_conf and not postgres_client_only
+
+- name: enable {{ postgres_include_dir }} configs inclusion
+  lineinfile: dest="/etc/postgresql/{{ postgres_version }}/main/postgresql.conf"
+              regexp="(^\s*)#*(\s*include_dir\s*=\s*')[^']*('.*$)"
+              backrefs=on
+              line='\1\2{{ postgres_include_dir }}\3'
+              backup=yes
+  when: postgres_enable_conf and not postgres_client_only
+
+- name: ensure postgresql is started
+  service: name=postgresql state=started
+  when: not postgres_client_only

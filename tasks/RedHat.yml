@@ -1,0 +1,29 @@
+---
+- name: install a repo
+  yum: name=https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+
+- name: install a server and a contrib package
+  yum: name={{ item }}
+  with_items:
+    - postgresql96-server
+    - postgresql96-contrib
+
+- name: init the DB
+  shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
+  ignore_errors: True
+
+- name: create conf.d
+  file: dest=/var/lib/pgsql/{{ postgres_version }}/data/conf.d state=directory
+  when: postgres_enable_conf and not postgres_client_only
+
+- name: enable "{{ postgres_include_dir }}" configs inclusion
+  lineinfile: dest="/var/lib/pgsql/{{ postgres_version }}/data/postgresql.conf"
+              regexp="(^\s*)#*(\s*include_dir\s*=\s*')[^']*('.*$)"
+              backrefs=on
+              line='\1\2{{ postgres_include_dir }}\3'
+              backup=yes
+  when: postgres_enable_conf and not postgres_client_only
+
+- name: ensure postgresql is started
+  service: name=postgresql-{{ postgres_version }} state=started
+  when: not postgres_client_only
