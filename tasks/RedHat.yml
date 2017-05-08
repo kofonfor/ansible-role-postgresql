@@ -25,6 +25,14 @@
               backup=yes
   when: postgres_enable_conf and not postgres_client_only
 
+- name: enable md5 auth
+  lineinfile: dest="/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
+              regexp="host\s+all\s+all\s+127.0.0.1/32\s+ident"
+              line='host    all             all             127.0.0.1/32            md5'
+              backup=yes
+  when: not postgres_client_only
+  notify: reload postgresql
+
 - name: ensure postgresql is started
   service: name=postgresql-{{ postgres_version }} state=started
   when: not postgres_client_only
