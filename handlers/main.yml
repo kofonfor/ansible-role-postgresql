@@ -14,5 +14,8 @@
 - name: reload postgresql
   service: name=postgresql state=reloaded
 
+- name: reload postgresql-rh
+  service: name=postgresql-{{ postgres_version }} state=reloaded
+
 - name: reload postgres
   service: name=postgresql state=reloaded
