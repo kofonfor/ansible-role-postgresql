@@ -30,7 +30,7 @@
               regexp="host\s+all\s+all\s+127.0.0.1/32\s+ident"
               line='host    all             all             127.0.0.1/32            md5'
               backup=yes
-  when: not postgres_client_only
+  when: "(not postgres_client_only) and postgres_service_enabled"
   notify: reload postgresql-rh
 
 - name: ensure postgresql is started
