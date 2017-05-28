@@ -35,4 +35,4 @@
 
 - name: ensure postgresql is started
   service: name=postgresql-{{ postgres_version }} state=started
-  when: not postgres_client_only
+  when: "(not postgres_client_only) and postgres_service_enabled"

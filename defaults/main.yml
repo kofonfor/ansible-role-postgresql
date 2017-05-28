@@ -2,3 +2,4 @@ postgres_version: 9.6
 postgres_enable_conf: yes
 postgres_include_dir: conf.d
 postgres_client_only: no
+postgres_service_enabled: yes
