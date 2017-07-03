@@ -1,6 +1,6 @@
 ---
 - name: install a repo
-  yum: name=https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+  yum: name={{ postgres_redhat_repo_url }}
 
 - name: install a server and a contrib package
   yum: name={{ item }}
