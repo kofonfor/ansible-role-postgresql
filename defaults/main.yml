@@ -4,3 +4,4 @@ postgres_enable_conf: yes
 postgres_include_dir: conf.d
 postgres_client_only: no
 postgres_service_enabled: yes
+postgres_dir: /usr/pgsql-9.6

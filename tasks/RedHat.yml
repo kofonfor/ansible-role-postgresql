@@ -10,7 +10,7 @@
     - python-psycopg2
 
 - name: init the DB
-  shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
+  shell: "{{ postgres_dir }}/bin/postgresql96-setup initdb"
   ignore_errors: True
 
 - name: create conf.d
@@ -23,7 +23,7 @@
               backrefs=on
               line='\1\2{{ postgres_include_dir }}\3'
               backup=yes
-  when: postgres_enable_conf and not postgres_client_only
+  when: postgres_enable_conf and not postgres_client_only and postgres_service_enabled
 
 - name: enable md5 auth
   lineinfile: dest="/var/lib/pgsql/{{ postgres_version }}/data/pg_hba.conf"
