@@ -25,7 +25,7 @@
 
 - name: create conf.d
   file: dest=/etc/postgresql/{{ postgres_version }}/main/conf.d state=directory
-  when: postgres_enable_conf and not postgres_client_only
+  when: postgres_enable_conf and not postgres_client_only and postgres_service_enabled
 
 - name: enable {{ postgres_include_dir }} configs inclusion
   lineinfile: dest="/etc/postgresql/{{ postgres_version }}/main/postgresql.conf"
@@ -33,8 +33,8 @@
               backrefs=on
               line='\1\2{{ postgres_include_dir }}\3'
               backup=yes
-  when: postgres_enable_conf and not postgres_client_only
+  when: "postgres_enable_conf and (not postgres_client_only) and postgres_service_enabled"
 
 - name: ensure postgresql is started
   service: name=postgresql state=started
-  when: not postgres_client_only
+  when: "(not postgres_client_only) and postgres_service_enabled"
