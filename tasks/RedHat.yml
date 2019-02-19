@@ -10,7 +10,7 @@
     - python-psycopg2
 
 - name: init the DB
-  shell: "{{ postgres_dir }}/bin/postgresql96-setup initdb"
+  command: "{{ postgres_dir }}/bin/postgresql96-setup initdb"
   ignore_errors: True
 
 - name: create conf.d
