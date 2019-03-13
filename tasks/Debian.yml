@@ -10,6 +10,12 @@
   apt: update_cache=yes cache_valid_time=3600
   ignore_errors: True
 
+- name: install postgresql-common
+  apt: name=postgresql-common
+
+- name: put /etc/postgresql-common/createcluster.conf
+  template: src=createcluster.conf dest=/etc/postgresql-common/createcluster.conf backup=yes
+
 - name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
   apt: name={{ item }}
   with_items:
