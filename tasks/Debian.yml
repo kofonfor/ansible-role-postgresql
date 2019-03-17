@@ -16,6 +16,10 @@
 - name: put /etc/postgresql-common/createcluster.conf
   template: src=createcluster.conf dest=/etc/postgresql-common/createcluster.conf backup=yes
 
+- name: put /etc/postgresql-common/psqlrc
+  template: src=psqlrc dest=/etc/postgresql-common/psqlrc backup=yes
+  when: "postgres_psqlrc_content is defined"
+
 - name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
   apt: name={{ item }}
   with_items:
