@@ -29,6 +29,13 @@
     - python-psycopg2
   when: not postgres_client_only
 
+- name: install PostGIS packages
+  apt: name={{ item }}
+  with_items:
+    - postgresql-{{ postgres_version }}-postgis-{{ postgres_postgis_version }}
+    - postgresql-{{ postgres_version }}-postgis-{{ postgres_postgis_version }}-scripts
+  when: postgres_install_postgis is defined and postgres_postgis_version
+
 - name: install PostgreSQL, postgresql-contrib and postgres ansible management requirements
   apt: name=postgresql-client-{{ postgres_version }}
   when: postgres_client_only

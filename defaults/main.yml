@@ -1,5 +1,6 @@
 postgres_redhat_repo_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
 postgres_version: 11
+postgres_postgis_version: 2.3
 postgres_enable_conf: yes
 postgres_include_dir: conf.d
 postgres_client_only: no
