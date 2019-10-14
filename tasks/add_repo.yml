@@ -5,7 +5,7 @@
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
 
 - name: ensure postgres source in sources.list
-  apt_repository: repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present update_cache=yes
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main" state=present update_cache=yes
   when: "ansible_distribution == 'Ubuntu'"
 
 - name: ensure postgres source in sources.list
